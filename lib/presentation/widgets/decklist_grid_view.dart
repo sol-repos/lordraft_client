@@ -22,7 +22,6 @@ class DecklistGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        print(constraints.maxWidth);
         final availableWidth = constraints.maxWidth;
         int columns = (availableWidth - horizontalSpacing) ~/ (cardWidth + horizontalSpacing);
         if (maxColumns != null) {
