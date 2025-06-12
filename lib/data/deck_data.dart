@@ -3,7 +3,7 @@ import 'package:lordraft_client/data/card_data.dart';
 class DeckData {
   final List<CardCopies> cardCopiesList;
   final int deckFormat;
-  final int deckVersion;
+  final int? deckVersion;
 
   const DeckData({
     required this.cardCopiesList,
@@ -20,7 +20,7 @@ class DeckData {
               ))
           .toList(),
       deckFormat: json['format'] as int,
-      deckVersion: json['version'] as int,
+      deckVersion: json['version'] as int?,
     );
   }
 
