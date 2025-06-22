@@ -5,8 +5,19 @@ import 'package:lordraft_client/presentation/states/host_game_state.dart';
 import 'package:lordraft_client/presentation/widgets/decklist_grid_view.dart';
 import 'package:lordraft_client/presentation/widgets/other_player_status_widget.dart';
 
-class HostGamePage extends StatelessWidget {
+class HostGamePage extends StatefulWidget {
   const HostGamePage({super.key});
+
+  @override
+  State<HostGamePage> createState() => _HostGamePageState();
+}
+
+class _HostGamePageState extends State<HostGamePage> {
+  @override
+  void initState() {
+    
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +30,14 @@ class HostGamePage extends StatelessWidget {
         actions: [OtherPlayerStatusWidget()],
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: const SingleChildScrollView(
-        child: Column(children: [
-          _DeckCodeEntry(),
-          _CubeDeckView(),
-        ],),
+      body: JuneBuilder(
+        () => June.find<HostGameState>(),
+        builder: (state) => const SingleChildScrollView(
+          child: Column(children: [
+            _DeckCodeEntry(),
+            _CubeDeckView(),
+          ],),
+        ),
       ),
     );
   }
@@ -34,7 +48,7 @@ class _DeckCodeEntry extends StatelessWidget {
 
 
   void _handleSubmit(String input) {
-    June.getState(() => HostGameState()).submitDeckCodeInput(input);
+    June.find<HostGameState>().submitDeckCodeInput(input);
   }
 
   @override
@@ -70,7 +84,7 @@ class _CubeDeckView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return JuneBuilder(() => HostGameState(), builder: (state) {
+    return JuneBuilder(() => June.find<HostGameState>(), builder: (state) {
       if (state.deckData == null) {
         return const SizedBox.shrink();
       }

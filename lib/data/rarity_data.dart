@@ -1,13 +1,14 @@
-class RarityData {
-  final String nameRef;
-  final String name;
+import 'package:lordraft_client/data/static_data.dart';
 
+class RarityData extends StaticData {
   const RarityData({
-    required this.nameRef,
-    required this.name,
+    required super.nameRef,
+    required super.name,
   });
+}
 
-  static RarityData fromJson(Map<String, dynamic> json) {
+class RarityDataFactory extends StaticDataFactory {
+  RarityData fromJson(Map<String, dynamic> json) {
     return RarityData(
       nameRef: json['nameRef'] as String,
       name: json['name'] as String,

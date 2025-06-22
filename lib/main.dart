@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:lordraft_client/core/dependencies.dart';
+import 'package:june/june.dart';
+import 'package:lordraft_client/presentation/states/app_startup_state.dart';
 import 'package:lordraft_client/presentation/pages/host_game_page.dart';
 import 'package:lordraft_client/core/theme.dart';
-import 'package:lordraft_client/core/util.dart';
 
 void main() {
   runApp(const MainApp());
@@ -16,15 +16,9 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> {
-  bool isSetupDone = false;
-
   @override
   void initState() {
-    Dependencies.instance.setup().then((_) {
-      setState(() {
-        isSetupDone = true;
-      });
-    });
+    June.getState(() => AppStartupState()).setup();
     super.initState();
   }
 
@@ -41,7 +35,15 @@ class _MainAppState extends State<MainApp> {
     return MaterialApp(
       title: 'LoR Cube Draft',
       theme: brightness == Brightness.light ? theme.light() : theme.dark(),
-      home: isSetupDone ? const HostGamePage() : const _LoadingPage(),
+      home: JuneBuilder(
+        () => AppStartupState(),
+        builder: (state) {
+          if (!state.isSetupDone) {
+            return const _LoadingPage();
+          }
+          return const HostGamePage();
+        },
+      ),
     );
   }
 }

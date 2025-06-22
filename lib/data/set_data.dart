@@ -1,17 +1,19 @@
 import 'package:lordraft_client/data/remote_asset.dart';
+import 'package:lordraft_client/data/static_data.dart';
 
-class SetData {
-  final String nameRef;
-  final String name;
+class SetData extends StaticData {
   final RemoteAsset icon;
 
   const SetData({
-    required this.nameRef,
-    required this.name,
+    required super.nameRef,
+    required super.name,
     required this.icon,
   });
+}
 
-  static SetData fromJson(Map<String, dynamic> json) {
+class SetDataFactory extends StaticDataFactory {
+  @override
+  SetData fromJson(Map<String, dynamic> json) {
     return SetData(
       nameRef: json['nameRef'] as String,
       name: json['name'] as String,

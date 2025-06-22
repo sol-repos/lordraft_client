@@ -1,13 +1,15 @@
-class SpellSpeedData {
-  final String nameRef;
-  final String name;
+import 'package:lordraft_client/data/static_data.dart';
 
+class SpellSpeedData extends StaticData {
   const SpellSpeedData({
-    required this.nameRef,
-    required this.name,
+    required super.nameRef,
+    required super.name,
   });
+}
 
-  static SpellSpeedData fromJson(Map<String, dynamic> json) {
+class SpellSpeedDataFactory extends StaticDataFactory {
+  @override
+  SpellSpeedData fromJson(Map<String, dynamic> json) {
     return SpellSpeedData(
       nameRef: json['nameRef'] as String,
       name: json['name'] as String,

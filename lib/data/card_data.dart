@@ -1,3 +1,4 @@
+import 'package:lordraft_client/core/static_data_manager.dart';
 import 'package:lordraft_client/data/associated_cards_data.dart';
 import 'package:lordraft_client/data/card_description_data.dart';
 import 'package:lordraft_client/data/format_data.dart';
@@ -7,7 +8,6 @@ import 'package:lordraft_client/data/region_data.dart';
 import 'package:lordraft_client/data/remote_asset.dart';
 import 'package:lordraft_client/data/set_data.dart';
 import 'package:lordraft_client/data/spell_speed_data.dart';
-import 'package:lordraft_client/core/dependencies.dart';
 
 class CardData {
   final AssociatedCardsData associatedCards;
@@ -64,7 +64,7 @@ class CardData {
       gameImage: RemoteAsset.fromDBUrl(json['gameAbsolutePath'] as String),
       fullImage: RemoteAsset.fromDBUrl(json['fullAbsolutePath'] as String),
       regions: (json['regionRefs'] as List)
-          .map((regionRef) => getRegion(regionRef as String))
+          .map((regionRef) => StaticDataManager().getRegionByRef(regionRef as String))
           .toList(),
       attack: json['attack'] as int,
       cost: json['cost'] as int,
@@ -82,17 +82,17 @@ class CardData {
       name: json['name'] as String,
       cardCode: json['cardCode'] as String,
       keywords: (json['keywordRefs'] as List)
-          .map((keywordRef) => getKeyword(keywordRef as String))
+          .map((keywordRef) => StaticDataManager().getKeywordByRef(keywordRef as String))
           .toList(),
-      spellSpeed: getSpellSpeed(json['spellSpeedRef'] as String),
-      rarity: getRarity(json['rarityRef'] as String),
+      spellSpeed: StaticDataManager().getSpellSpeedByRef(json['spellSpeedRef'] as String),
+      rarity: StaticDataManager().getRarityByRef(json['rarityRef'] as String),
       subtypes: List<String>.from(json['subtypes']),
       supertype: json['supertype'] as String,
       type: json['type'] as String,
       isCollectible: json['collectible'] == 1,
-      containingSet: getSet(json['setRef'] as String),
+      containingSet: StaticDataManager().getSetByRef(json['setRef'] as String),
       legalFormats: (json['formatRefs'] as List)
-          .map((formatRef) => getFormat(formatRef as String))
+          .map((formatRef) => StaticDataManager().getFormatByRef(formatRef as String))
           .toList(),
     );
   }
