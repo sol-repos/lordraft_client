@@ -7,7 +7,7 @@ import 'package:lordraft_client/data/region_data.dart';
 import 'package:lordraft_client/data/set_data.dart';
 import 'package:lordraft_client/data/spell_speed_data.dart';
 import 'package:lordraft_client/domain/lorbase.dart';
-import 'package:lordraft_client/domain/lordraft_web_socket_service.dart';
+import 'package:lordraft_client/domain/lordraft_socket_service.dart';
 import 'package:lordraft_client/presentation/states/host_game_state.dart';
 
 class AppStartupState extends JuneState {
@@ -23,7 +23,7 @@ class AppStartupState extends JuneState {
 
     StaticDataManager().initialize(regions: regions, keywords: keywords, spellSpeeds: spellSpeeds, rarities: rarities, sets: sets, formats: formats);
 
-    June.put(() => HostGameState(LordraftWebSocketService()));
+    June.put(() => HostGameState(LordraftSocketService()));
 
     isSetupDone = true;
     setState();

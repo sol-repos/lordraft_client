@@ -15,7 +15,7 @@ class HostGamePage extends StatefulWidget {
 class _HostGamePageState extends State<HostGamePage> {
   @override
   void initState() {
-    
+    June.find<HostGameState>().startHosting();
     super.initState();
   }
 
@@ -32,12 +32,11 @@ class _HostGamePageState extends State<HostGamePage> {
       ),
       body: JuneBuilder(
         () => June.find<HostGameState>(),
-        builder: (state) => const SingleChildScrollView(
-          child: Column(children: [
-            _DeckCodeEntry(),
-            _CubeDeckView(),
-          ],),
-        ),
+        builder: (state) => state.isHosting
+            ? const SingleChildScrollView(
+                child: Column(children: [_DeckCodeEntry(), _CubeDeckView()]),
+              )
+            : Center(child: CircularProgressIndicator()),
       ),
     );
   }
@@ -45,7 +44,6 @@ class _HostGamePageState extends State<HostGamePage> {
 
 class _DeckCodeEntry extends StatelessWidget {
   const _DeckCodeEntry();
-
 
   void _handleSubmit(String input) {
     June.find<HostGameState>().submitDeckCodeInput(input);
@@ -84,11 +82,14 @@ class _CubeDeckView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return JuneBuilder(() => June.find<HostGameState>(), builder: (state) {
-      if (state.deckData == null) {
-        return const SizedBox.shrink();
-      }
-      return DecklistGridView(deck: state.deckData);
-    });
+    return JuneBuilder(
+      () => June.find<HostGameState>(),
+      builder: (state) {
+        if (state.deckData == null) {
+          return const SizedBox.shrink();
+        }
+        return DecklistGridView(deck: state.deckData);
+      },
+    );
   }
 }

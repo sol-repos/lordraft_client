@@ -1,18 +1,21 @@
 import 'package:june/june.dart';
 import 'package:lordraft_client/data/deck_data.dart';
 import 'package:lordraft_client/domain/lorbase.dart';
-import 'package:lordraft_client/domain/lordraft_web_socket_service.dart';
+import 'package:lordraft_client/domain/lordraft_socket_service.dart';
 
 class HostGameState extends JuneState {
   bool isHosting = false;
   DeckData? deckData;
 
-  final LordraftWebSocketService webSocketService;
+  final LordraftSocketService socketService;
 
-  HostGameState(this.webSocketService);
+  HostGameState(this.socketService);
 
   void startHosting() {
-    
+    socketService.connect(onConnect: () {
+      isHosting = true;
+      setState();
+    });
   }
 
   void submitDeckCodeInput(String deckCodeInput) async {
