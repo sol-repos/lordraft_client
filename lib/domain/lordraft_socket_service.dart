@@ -5,7 +5,7 @@ class LordraftSocketService {
     Socket? _socket;
   
 
-  void connect({void Function()? onConnect}) {
+  void connectAndHost({void Function()? onHosted}) {
     _socket = io(
       Constants.socketBaseUrl,
       OptionBuilder()
@@ -16,7 +16,11 @@ class LordraftSocketService {
     );
 
     _socket!.onConnect((_) {
-      onConnect?.call();
+      _socket!.emit('host');
+    });
+
+    _socket!.on('hostSuccessful', (_) {
+      onHosted?.call();
     });
 
     _socket!.onDisconnect((_) {

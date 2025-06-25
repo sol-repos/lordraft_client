@@ -12,7 +12,7 @@ class HostGameState extends JuneState {
   HostGameState(this.socketService);
 
   void startHosting() {
-    socketService.connect(onConnect: () {
+    socketService.connectAndHost(onHosted: () {
       isHosting = true;
       setState();
     });
