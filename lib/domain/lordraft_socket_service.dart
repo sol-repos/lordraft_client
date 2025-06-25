@@ -6,6 +6,8 @@ class LordraftSocketService {
   
 
   void connectAndHost({void Function()? onHosted}) {
+    disconnect();
+
     _socket = io(
       Constants.socketBaseUrl,
       OptionBuilder()
@@ -21,6 +23,35 @@ class LordraftSocketService {
 
     _socket!.on('hostSuccessful', (_) {
       onHosted?.call();
+    });
+
+    _socket!.onDisconnect((_) {
+      // TODO: Handle disconnect
+    });
+
+    _socket!.onError((error) {
+      // TODO: Handle error
+    });
+  }
+
+  void connectAndJoin(String sessionId, {void Function()? onJoined}) {
+    disconnect();
+
+    _socket = io(
+      Constants.socketBaseUrl,
+      OptionBuilder()
+          .setTransports(['websocket']) // for Flutter or Dart VM
+          .setReconnectionAttempts(5)
+          .setReconnectionDelay(500)
+          .build(),
+    );
+
+    _socket!.onConnect((_) {
+      _socket!.emit('join', sessionId);
+    });
+
+    _socket!.on('joinSuccessful', (_) {
+      onJoined?.call();
     });
 
     _socket!.onDisconnect((_) {

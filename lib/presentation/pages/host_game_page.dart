@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:june/instance_manager.dart';
 import 'package:june/state_manager/src/simple/state.dart';
-import 'package:lordraft_client/presentation/states/host_game_state.dart';
+import 'package:lordraft_client/presentation/states/game_session_state.dart';
 import 'package:lordraft_client/presentation/widgets/decklist_grid_view.dart';
 import 'package:lordraft_client/presentation/widgets/other_player_status_widget.dart';
 
@@ -15,7 +15,7 @@ class HostGamePage extends StatefulWidget {
 class _HostGamePageState extends State<HostGamePage> {
   @override
   void initState() {
-    June.find<HostGameState>().startHosting();
+    June.find<GameSessionState>().startHosting();
     super.initState();
   }
 
@@ -24,15 +24,15 @@ class _HostGamePageState extends State<HostGamePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Host LoR Cube Draft',
+          'Hosting LoR Cube Draft',
           style: TextTheme.of(context).headlineMedium,
         ),
         actions: [OtherPlayerStatusWidget()],
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
       body: JuneBuilder(
-        () => June.find<HostGameState>(),
-        builder: (state) => state.isHosting
+        () => June.find<GameSessionState>(),
+        builder: (state) => state.status == GameSessionStatus.hosting
             ? const SingleChildScrollView(
                 child: Column(children: [_DeckCodeEntry(), _CubeDeckView()]),
               )
@@ -46,7 +46,7 @@ class _DeckCodeEntry extends StatelessWidget {
   const _DeckCodeEntry();
 
   void _handleSubmit(String input) {
-    June.find<HostGameState>().submitDeckCodeInput(input);
+    June.find<GameSessionState>().submitDeckCodeInput(input);
   }
 
   @override
@@ -83,7 +83,7 @@ class _CubeDeckView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return JuneBuilder(
-      () => June.find<HostGameState>(),
+      () => June.find<GameSessionState>(),
       builder: (state) {
         if (state.deckData == null) {
           return const SizedBox.shrink();

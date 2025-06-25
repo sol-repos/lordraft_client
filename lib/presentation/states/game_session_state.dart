@@ -3,17 +3,36 @@ import 'package:lordraft_client/data/deck_data.dart';
 import 'package:lordraft_client/domain/lorbase.dart';
 import 'package:lordraft_client/domain/lordraft_socket_service.dart';
 
-class HostGameState extends JuneState {
-  bool isHosting = false;
+enum GameSessionStatus {
+  idle,
+  staringHost,
+  joining,
+  hosting,
+  joined,
+}
+
+class GameSessionState extends JuneState {
+  GameSessionStatus status = GameSessionStatus.idle;
   DeckData? deckData;
 
   final LordraftSocketService socketService;
 
-  HostGameState(this.socketService);
+  GameSessionState(this.socketService);
 
   void startHosting() {
+    status = GameSessionStatus.staringHost;
+    setState();
     socketService.connectAndHost(onHosted: () {
-      isHosting = true;
+      status = GameSessionStatus.hosting;
+      setState();
+    });
+  }
+
+  void joinSession(String sessionId) {
+    status = GameSessionStatus.joining;
+    setState();
+    socketService.connectAndJoin(sessionId, onJoined: () {
+      status = GameSessionStatus.joined;
       setState();
     });
   }

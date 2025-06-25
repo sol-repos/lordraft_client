@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:june/june.dart';
+import 'package:lordraft_client/presentation/pages/debug_start_page.dart';
 import 'package:lordraft_client/presentation/states/app_startup_state.dart';
-import 'package:lordraft_client/presentation/pages/host_game_page.dart';
 import 'package:lordraft_client/core/theme.dart';
 
 void main() {
@@ -41,7 +41,7 @@ class _MainAppState extends State<MainApp> {
           if (!state.isSetupDone) {
             return const _LoadingPage();
           }
-          return const HostGamePage();
+          return const DebugStartPage();
         },
       ),
     );
