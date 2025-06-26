@@ -12,6 +12,7 @@ enum GameSessionStatus {
 
 class GameSessionState extends JuneState {
   GameSessionStatus status = GameSessionStatus.idle;
+  String? sessionId;
   DeckData? deckData;
 
   final LordraftSocketService socketService;
@@ -21,7 +22,7 @@ class GameSessionState extends JuneState {
   void startHosting() async {
     status = GameSessionStatus.startingHost;
     setState();
-    await socketService.connectAndHost();
+    sessionId = await socketService.connectAndHost();
     status = GameSessionStatus.hosting;
     _setupGameSession();
     setState();

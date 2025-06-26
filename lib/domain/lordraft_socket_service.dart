@@ -7,7 +7,7 @@ import 'package:socket_io_client/socket_io_client.dart';
 class LordraftSocketService {
   Socket? _socket;
 
-  Future<void> connectAndHost() async {
+  Future<String> connectAndHost() async {
     disconnect();
 
     _socket = io(
@@ -19,10 +19,10 @@ class LordraftSocketService {
           .build(),
     );
 
-    final completer = Completer<void>();
+    final completer = Completer<String>();
 
-    void handleHostSuccessful(_) {
-      completer.complete();
+    void handleHostSuccessful(sessionId) {
+      completer.complete(sessionId);
       _socket!.off('hostSuccessful', handleHostSuccessful);
     }
 
@@ -31,6 +31,12 @@ class LordraftSocketService {
     });
 
     _socket!.on('hostSuccessful', handleHostSuccessful);
+
+    _socket!.on('error', (error) {
+      if (!completer.isCompleted) {
+        completer.completeError(error ?? Exception('Unknown socket error'));
+      }
+    });
 
     _socket!.onDisconnect((_) {
       if (!completer.isCompleted) {
@@ -67,10 +73,17 @@ class LordraftSocketService {
     }
 
     _socket!.onConnect((_) {
+      print('Connected to session: $sessionId');
       _socket!.emit('join', sessionId);
     });
 
     _socket!.on('joinSuccessful', handleJoinSuccessful);
+
+    _socket!.on('error', (error) {
+      if (!completer.isCompleted) {
+        completer.completeError(error ?? Exception('Unknown socket error'));
+      }
+    });
 
     _socket!.onDisconnect((_) {
       if (!completer.isCompleted) {
