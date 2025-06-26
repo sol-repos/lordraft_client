@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:june/june.dart';
 import 'package:lordraft_client/presentation/states/game_session_state.dart';
+import 'package:lordraft_client/presentation/widgets/cube_deck_view.dart';
 
 class JoinGamePage extends StatefulWidget{
   final String sessionId;
@@ -33,7 +34,12 @@ class _JoinGamePageState extends State<JoinGamePage> {
         child: JuneBuilder(
           () => June.find<GameSessionState>(),
           builder: (state) => state.status == GameSessionStatus.joined
-              ? const Text('Successfully joined the game!', style: TextStyle(fontSize: 24))
+              ? Column(
+                children: [
+                  const Text('Successfully joined the game!', style: TextStyle(fontSize: 24)),
+                  CubeDeckView()
+                ],
+              )
               : const CircularProgressIndicator(),
           ),
       ),

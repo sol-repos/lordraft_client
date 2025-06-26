@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:june/instance_manager.dart';
 import 'package:june/state_manager/src/simple/state.dart';
 import 'package:lordraft_client/presentation/states/game_session_state.dart';
-import 'package:lordraft_client/presentation/widgets/decklist_grid_view.dart';
+import 'package:lordraft_client/presentation/widgets/cube_deck_view.dart';
 import 'package:lordraft_client/presentation/widgets/other_player_status_widget.dart';
 
 class HostGamePage extends StatefulWidget {
@@ -34,7 +34,7 @@ class _HostGamePageState extends State<HostGamePage> {
         () => June.find<GameSessionState>(),
         builder: (state) => state.status == GameSessionStatus.hosting
             ? const SingleChildScrollView(
-                child: Column(children: [_DeckCodeEntry(), _CubeDeckView()]),
+                child: Column(children: [_DeckCodeEntry(), CubeDeckView()]),
               )
             : Center(child: CircularProgressIndicator()),
       ),
@@ -73,23 +73,6 @@ class _DeckCodeEntry extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _CubeDeckView extends StatelessWidget {
-  const _CubeDeckView();
-
-  @override
-  Widget build(BuildContext context) {
-    return JuneBuilder(
-      () => June.find<GameSessionState>(),
-      builder: (state) {
-        if (state.deckData == null) {
-          return const SizedBox.shrink();
-        }
-        return DecklistGridView(deck: state.deckData);
-      },
     );
   }
 }
