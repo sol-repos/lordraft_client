@@ -1,11 +1,10 @@
 import 'package:june/june.dart';
 import 'package:lordraft_client/data/deck_data.dart';
-import 'package:lordraft_client/domain/lorbase.dart';
 import 'package:lordraft_client/domain/lordraft_socket_service.dart';
 
 enum GameSessionStatus {
   idle,
-  staringHost,
+  startingHost,
   joining,
   hosting,
   joined,
@@ -19,32 +18,33 @@ class GameSessionState extends JuneState {
 
   GameSessionState(this.socketService);
 
-  void startHosting() {
-    status = GameSessionStatus.staringHost;
+  void startHosting() async {
+    status = GameSessionStatus.startingHost;
     setState();
-    socketService.connectAndHost(onHosted: () {
-      status = GameSessionStatus.hosting;
-      setState();
-    });
+    await socketService.connectAndHost();
+    status = GameSessionStatus.hosting;
+    _setupGameSession();
+    setState();
   }
 
-  void joinSession(String sessionId) {
+  void joinSession(String sessionId) async {
     status = GameSessionStatus.joining;
     setState();
-    socketService.connectAndJoin(sessionId, onJoined: () {
-      status = GameSessionStatus.joined;
+    await socketService.connectAndJoin(sessionId);
+    status = GameSessionStatus.joined;
+    _setupGameSession();
+    setState();
+  }
+
+  void _setupGameSession() {
+    socketService.onDeckDataReceived((DeckData data) {
+      deckData = data;
       setState();
     });
   }
 
   void submitDeckCodeInput(String deckCodeInput) async {
     final deckCode = deckCodeInput.replaceAll(' ', '');
-    final data = await Lorbase.getDeckFromCode(deckCode);
-    if (data != null) {
-      deckData = data;
-      setState();
-    } else {
-      // TODO: Handle error, e.g., show a dialog or a snackbar
-    }
+    socketService.submitCubeDeckCode(deckCode);
   }
 }
