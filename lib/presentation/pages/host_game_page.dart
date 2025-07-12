@@ -32,7 +32,7 @@ class _HostGamePageState extends State<HostGamePage> {
       ),
       body: JuneBuilder(
         () => June.find<GameSessionState>(),
-        builder: (state) => state.status == GameSessionStatus.hosting
+        builder: (state) => state.status == GameSessionStatus.ready
             ? const SingleChildScrollView(
                 child: Column(children: [_DeckCodeEntry(), CubeDeckView()]),
               )

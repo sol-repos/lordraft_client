@@ -3,38 +3,49 @@ import 'package:lordraft_client/data/deck_data.dart';
 import 'package:lordraft_client/domain/lordraft_socket_service.dart';
 
 enum GameSessionStatus {
-  idle,
-  startingHost,
-  joining,
-  hosting,
-  joined,
+  disconnected,
+  connecting,
+  ready,
 }
 
 class GameSessionState extends JuneState {
-  GameSessionStatus status = GameSessionStatus.idle;
+  GameSessionStatus status = GameSessionStatus.disconnected;
+  bool? isHost;
   String? sessionId;
   DeckData? deckData;
+  bool otherPlayerJoined = false;
 
   final LordraftSocketService socketService;
 
   GameSessionState(this.socketService);
 
   void startHosting() async {
-    status = GameSessionStatus.startingHost;
+    isHost = true;
+    status = GameSessionStatus.connecting;
     setState();
     sessionId = await socketService.connectAndHost();
-    status = GameSessionStatus.hosting;
+    status = GameSessionStatus.ready;
+    _listenForJoin();
     _setupGameSession();
     setState();
   }
 
   void joinSession(String sessionId) async {
-    status = GameSessionStatus.joining;
+    isHost = false;
+    status = GameSessionStatus.connecting;
     setState();
     await socketService.connectAndJoin(sessionId);
-    status = GameSessionStatus.joined;
+    status = GameSessionStatus.ready;
+    otherPlayerJoined = true;
     _setupGameSession();
     setState();
+  }
+
+  void _listenForJoin() {
+    socketService.onPlayerJoined(() {
+      otherPlayerJoined = true;
+      setState();
+    });
   }
 
   void _setupGameSession() {

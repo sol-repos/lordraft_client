@@ -22,7 +22,9 @@ class LordraftSocketService {
     final completer = Completer<String>();
 
     void handleHostSuccessful(sessionId) {
-      completer.complete(sessionId);
+      if (!completer.isCompleted) {
+        completer.complete(sessionId);
+      }
       _socket!.off('hostSuccessful', handleHostSuccessful);
     }
 
@@ -103,6 +105,16 @@ class LordraftSocketService {
   void disconnect() {
     _socket?.disconnect();
     _socket = null;
+  }
+
+  void onPlayerJoined(Function() callback) {
+    if (_socket == null || !_socket!.connected) {
+      throw Exception('Socket is not connected');
+    }
+
+    _socket!.on('playerJoined', (_) {
+      callback.call();
+    });
   }
 
   void submitCubeDeckCode(String deckCode) {
