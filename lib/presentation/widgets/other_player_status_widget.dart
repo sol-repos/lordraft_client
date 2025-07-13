@@ -17,7 +17,7 @@ class OtherPlayerStatusWidget extends StatelessWidget {
               return const Text('Loading...');
             case GameSessionStatus.ready:
               if (state.otherPlayerJoined) {
-                return const Text('Other player joined!');
+                return const Text('Other player joined ✓');
               } else {
                 return SelectableText(state.sessionId!);
               }
